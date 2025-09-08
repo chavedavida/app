@@ -1,375 +1,148 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chave da Vida</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
-            color: #1e293b;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 1rem;
-        }
-        .app-container {
-            background-color: #ffffff;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            max-width: 420px;
-            width: 100%;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-        .btn-primary {
-            background-color: #3b82f6;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            font-weight: 600;
-            text-align: center;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5), 0 2px 4px -1px rgba(59, 130, 246, 0.25);
-        }
-        .btn-primary:hover {
-            background-color: #2563eb;
-            transform: translateY(-2px);
-        }
-        .btn-secondary {
-            background-color: #cbd5e1;
-            color: #4b5563;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            font-weight: 600;
-            text-align: center;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-        .btn-secondary:hover {
-            background-color: #94a3b8;
-        }
-        .btn-icon-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-weight: 500;
-            color: #64748b;
-        }
-        .input-field {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 0.75rem;
-            border: 1px solid #e2e8f0;
-            background-color: #f8fafc;
-        }
-        .toast-message {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #3b82f6;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .toast-message.show {
-            opacity: 1;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chave da Vida</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 16px;
+      color: #222;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #2b6cb0;
+      text-align: center;
+    }
+    p {
+      text-align: center;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 10px;
+      background: #ffd6e0;
+      color: #222;
+      text-decoration: none;
+      margin: 6px 6px 12px 6px;
+      font-weight: bold;
+    }
+    .qr {
+      max-width: 240px;
+      display: block;
+      margin: 10px auto;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #2b6cb0;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #1e4e8c;
+    }
+    footer {
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #666;
+      text-align: center;
+    }
+    .pix-link {
+      color:#2b6cb0;
+      font-weight:bold;
+      text-decoration:none;
+    }
+  </style>
 </head>
 <body>
-    <div class="app-container" id="app">
-        </div>
-    
-    <div id="toast" class="toast-message"></div>
 
-    <script>
-        const dbSimulado = {
-            usuarios: [],
-            perguntas: [],
-            categorias: [
-                { nome: 'Espiritualidade & Fé', frase: 'A sua jornada de fé começa com uma pergunta. Qual chave você busca hoje?' },
-                { nome: 'Relacionamentos & Casamento', frase: 'A chave para a harmonia está na compreensão mútua. Qual o seu dilema hoje?' },
-                { nome: 'Família & Convivência', frase: 'A base da vida é o lar. Onde você precisa de uma chave de sabedoria?' },
-                { nome: 'Carreira & Estudos', frase: 'Seu futuro profissional começa com um passo. Qual é o seu próximo passo?' },
-                { nome: 'Vida Financeira', frase: 'A prosperidade é uma semente que se cultiva. O que você quer plantar hoje?' },
-                { nome: 'Bem-estar & Emoções', frase: 'A paz interior é o maior tesouro. Qual chave você precisa para encontrá-la?' }
-            ]
-        };
+  <h1>Toda dúvida tem uma resposta</h1>
+  <p>Em qual área você precisa de uma chave hoje?</p>
 
-        const appContainer = document.getElementById('app');
-        const toastElement = document.getElementById('toast');
-        let currentView = 'home';
-        let selectedCategory = null;
+  <!-- Botões de categoria -->
+  <div style="text-align:center;">
+    <a class="btn" href="#form">Espiritualidade & Fé</a>
+    <a class="btn" href="#form">Relacionamentos & Casamento</a>
+    <a class="btn" href="#form">Família & Convivência</a>
+    <a class="btn" href="#form">Carreira & Estudos</a>
+    <a class="btn" href="#form">Vida Financeira</a>
+    <a class="btn" href="#form">Bem-estar & Emoções</a>
+  </div>
 
-        function showToast(message) {
-            toastElement.textContent = message;
-            toastElement.classList.add('show');
-            setTimeout(() => {
-                toastElement.classList.remove('show');
-            }, 3000);
-        }
+  <hr>
 
-        function renderScreen(view, data = null) {
-            currentView = view;
-            appContainer.innerHTML = '';
-            
-            if (view !== 'home') {
-                const header = `
-                    <div class="flex items-center justify-between mb-6">
-                        <button onclick="navigate('home')" class="btn-icon-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                            </svg>
-                            Voltar
-                        </button>
-                        <h2 class="text-xl font-bold text-center flex-grow">Chave da Vida</h2>
-                        <button onclick="navigate('profile')" class="btn-icon-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A9.967 9.967 0 0112 15c2.201 0 4.264.846 5.879 2.222a7.5 7.5 0 00-11.758 0zM12 9a3 3 0 110-6 3 3 0 010 6z" />
-                            </svg>
-                        </button>
-                    </div>
-                `;
-                appContainer.innerHTML += header;
-            }
+  <!-- Formulário Netlify -->
+  <form id="form" name="chave-da-vida" method="POST" data-netlify="true">
+    <input type="hidden" name="form-name" value="chave-da-vida" />
 
-            if (view === 'home') {
-                appContainer.innerHTML = `
-                    <div class="flex flex-col items-center justify-center text-center gap-6">
-                        <h1 class="text-3xl font-extrabold text-gray-800">Chave da Vida</h1>
-                        <p class="text-gray-600 text-lg">Toda dúvida tem uma resposta. Em qual área você precisa de uma chave hoje?</p>
-                        ${dbSimulado.categorias.map(cat => `
-                            <button onclick="navigate('category', '${cat.nome}')" class="btn-primary w-full">
-                                ${cat.nome}
-                            </button>
-                        `).join('')}
-                    </div>
-                    <div class="mt-8 flex flex-col gap-4 text-center">
-                        <button onclick="navigate('history')" class="btn-secondary w-full">
-                            Meu Histórico
-                        </button>
-                        <button onclick="navigate('profile')" class="btn-secondary w-full">
-                            Meu Perfil
-                        </button>
-                    </div>
-                `;
-            } else if (view === 'category' && data) {
-                selectedCategory = data;
-                const categoria = dbSimulado.categorias.find(cat => cat.nome === data);
-                appContainer.innerHTML += `
-                    <div class="flex flex-col items-center justify-center text-center gap-6">
-                        <h2 class="text-2xl font-bold text-gray-800">${categoria.nome}</h2>
-                        <p class="text-gray-600 text-lg">${categoria.frase}</p>
-                        <button onclick="navigate('ask')" class="btn-primary w-full">
-                            Fazer sua própria pergunta
-                        </button>
-                    </div>
-                `;
-            } else if (view === 'ask') {
-                appContainer.innerHTML += `
-                    <h2 class="text-2xl font-bold text-gray-800 text-center">Formulário de Pergunta</h2>
-                    <form id="ask-form" class="flex flex-col gap-4">
-                        <textarea id="question-input" rows="4" placeholder="Digite sua pergunta aqui..." class="input-field resize-none" required></textarea>
-                        <input type="text" id="name-input" placeholder="Seu Nome" class="input-field" required>
-                        <input type="email" id="email-input" placeholder="Seu E-mail" class="input-field" required>
-                        <input type="tel" id="phone-input" placeholder="Seu Telefone" class="input-field" required>
-                        <button type="submit" class="btn-primary w-full">Receber Chave da Vida</button>
-                    </form>
-                `;
-                document.getElementById('ask-form').addEventListener('submit', handleAskSubmit);
-            } else if (view === 'payment') {
-                appContainer.innerHTML += `
-                    <h2 class="text-2xl font-bold text-gray-800 text-center">Pagamento via PIX</h2>
-                    <p class="text-gray-600 text-center">Para receber sua resposta personalizada, realize o pagamento de R$10,00.</p>
-                    <div class="flex flex-col items-center justify-center gap-4 p-6 bg-gray-100 rounded-xl">
-                        <img src="https://placehold.co/200x200/4f46e5/ffffff?text=QR+Code+PIX" alt="QR Code PIX" class="rounded-lg">
-                        <p class="font-semibold text-lg">Valor: R$ 10,00</p>
-                        <p class="text-sm text-gray-500">Copie e cole o código abaixo no seu app de banco:</p>
-                        <div class="relative w-full">
-                            <input type="text" value="PixSimulado12345" id="pix-code" readonly class="input-field text-center pr-10">
-                            <button onclick="copyPixCode()" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v4a1 1 0 001 1h4a1 1 0 001-1V7m-5 0h6m-6 0H8m0 0a2 2 0 100 4h6a2 2 0 100-4h-6zm0 0V5a2 2 0 012-2h4a2 2 0 012 2v2m-6 0h6m-6 0h6" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <button onclick="navigate('result', { question: localStorage.getItem('lastQuestion'), category: localStorage.getItem('lastCategory') })" class="btn-primary w-full mt-4">
-                        Pagar e Ver Resposta
-                    </button>
-                `;
-            } else if (view === 'result' && data) {
-                const respostaIA = gerarRespostaIA(data.question, data.category);
-                appContainer.innerHTML += `
-                    <h2 class="text-2xl font-bold text-gray-800 text-center">Sua Chave da Vida</h2>
-                    <div class="bg-gray-100 p-6 rounded-xl flex flex-col gap-4">
-                        <p class="font-semibold text-gray-700">Pergunta:</p>
-                        <p class="text-gray-600 italic">"${data.question}"</p>
-                        <hr class="border-gray-300">
-                        <p class="font-semibold text-gray-700">Resposta:</p>
-                        <p class="text-gray-800">${respostaIA}</p>
-                    </div>
-                    <button onclick="shareResponse()" class="btn-secondary w-full mt-4">
-                        Compartilhar
-                    </button>
-                `;
-                saveQuestion(data.question, respostaIA, data.category);
-            } else if (view === 'history') {
-                const historico = JSON.parse(localStorage.getItem('perguntas') || '[]');
-                if (historico.length === 0) {
-                    appContainer.innerHTML += `
-                        <h2 class="text-2xl font-bold text-gray-800 text-center">Histórico de Perguntas</h2>
-                        <p class="text-gray-600 text-center mt-4">Você ainda não tem perguntas registradas. Comece a usar o app!</p>
-                    `;
-                } else {
-                    appContainer.innerHTML += `
-                        <h2 class="text-2xl font-bold text-gray-800 text-center">Histórico de Perguntas</h2>
-                        <div class="flex flex-col gap-4 mt-4">
-                            ${historico.map(pergunta => `
-                                <div class="bg-gray-100 p-4 rounded-lg flex flex-col gap-2">
-                                    <p class="font-semibold text-gray-700">Pergunta em ${pergunta.categoria}:</p>
-                                    <p class="text-gray-600 italic">"${pergunta.pergunta}"</p>
-                                    <button onclick="viewHistoricalResponse('${pergunta.pergunta}')" class="btn-secondary mt-2">
-                                        Ver Resposta
-                                    </button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                }
-            } else if (view === 'profile') {
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                appContainer.innerHTML += `
-                    <h2 class="text-2xl font-bold text-gray-800 text-center">Meu Perfil</h2>
-                    <div class="flex flex-col gap-4 p-6 bg-gray-100 rounded-xl">
-                        <p><strong>Nome:</strong> ${user.nome || 'Não informado'}</p>
-                        <p><strong>E-mail:</strong> ${user.email || 'Não informado'}</p>
-                        <p><strong>Telefone:</strong> ${user.telefone || 'Não informado'}</p>
-                    </div>
-                    <button onclick="doLogout()" class="btn-secondary w-full mt-4">
-                        Sair
-                    </button>
-                `;
-            }
-        }
+    <label>Nome (obrigatório)
+      <input type="text" name="nome" required>
+    </label>
 
-        function navigate(view, data = null) {
-            renderScreen(view, data);
-        }
+    <label>E-mail (obrigatório)
+      <input type="email" name="email" required>
+    </label>
 
-        window.navigate = navigate;
+    <label>Telefone / WhatsApp
+      <input type="text" name="telefone">
+    </label>
 
-        function handleAskSubmit(event) {
-            event.preventDefault();
-            const form = event.target;
-            const question = form.querySelector('#question-input').value;
-            const name = form.querySelector('#name-input').value;
-            const email = form.querySelector('#email-input').value;
-            const phone = form.querySelector('#phone-input').value;
+    <label>Categoria
+      <select name="categoria" required>
+        <option value="Espiritualidade & Fé">Espiritualidade & Fé</option>
+        <option value="Relacionamentos & Casamento">Relacionamentos & Casamento</option>
+        <option value="Família & Convivência">Família & Convivência</option>
+        <option value="Carreira & Estudos">Carreira & Estudos</option>
+        <option value="Vida Financeira">Vida Financeira</option>
+        <option value="Bem-estar & Emoções">Bem-estar & Emoções</option>
+      </select>
+    </label>
 
-            localStorage.setItem('user', JSON.stringify({ nome: name, email: email, telefone: phone }));
-            localStorage.setItem('lastQuestion', question);
-            localStorage.setItem('lastCategory', selectedCategory);
+    <label>Sua pergunta
+      <textarea name="pergunta" rows="4" required></textarea>
+    </label>
 
-            navigate('payment');
-        }
+    <p style="text-align:center;">
+      Pague R$10 via PIX usando o QR Code abaixo ou a chave.
+    </p>
 
-        function saveQuestion(question, answer, category) {
-            const historico = JSON.parse(localStorage.getItem('perguntas') || '[]');
-            historico.push({ pergunta: question, resposta: answer, categoria: category });
-            localStorage.setItem('perguntas', JSON.stringify(historico));
-        }
+    <img class="qr" src="assets/qr-pix.png" alt="QR PIX - Chave da Vida">
 
-        function shareResponse() {
-            const lastQuestion = localStorage.getItem('lastQuestion');
-            const lastAnswer = gerarRespostaIA(lastQuestion, localStorage.getItem('lastCategory'));
-            const shareText = `Perguntei "${lastQuestion}" no app Chave da Vida e recebi a seguinte resposta: \n\n"${lastAnswer}"\n\nBaixe o app e receba a sua "Chave da Vida" também!`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Minha Chave da Vida',
-                    text: shareText
-                }).then(() => console.log('Compartilhado com sucesso'))
-                  .catch((error) => console.error('Erro ao compartilhar:', error));
-            } else {
-                showToast("Recurso de compartilhamento não disponível neste navegador.");
-            }
-        }
+    <p style="text-align:center;">
+      Chave PIX: <strong>77fa3a92-3f5d-475a-97d8-d41afeb0beb9</strong>
+    </p>
 
-        function viewHistoricalResponse(question) {
-            const historico = JSON.parse(localStorage.getItem('perguntas') || '[]');
-            const perguntaEncontrada = historico.find(p => p.pergunta === question);
-            if (perguntaEncontrada) {
-                showToast("Resposta: " + perguntaEncontrada.resposta);
-            }
-        }
+    <p style="text-align:center;">
+      <a href="pix:77fa3a92-3f5d-475a-97d8-d41afeb0beb9" class="pix-link">Clique aqui para pagar via PIX</a>
+    </p>
 
-        function gerarRespostaIA(pergunta, categoria) {
-            const respostas = {
-                'Espiritualidade & Fé': {
-                    motivacao: "Sua fé é sua força. Permita que a Palavra de Deus ilumine seu caminho.",
-                    versiculo: "Confia no Senhor de todo o teu coração, e não te estribes no teu próprio entendimento.",
-                    referencia: "Provérbios 3:5"
-                },
-                'Relacionamentos & Casamento': {
-                    motivacao: "O amor é paciente e bondoso. Construir um relacionamento é um ato de fé diário.",
-                    versiculo: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito da união.",
-                    referencia: "Colossenses 3:14"
-                },
-                'Família & Convivência': {
-                    motivacao: "A base da vida é o lar. Onde você precisa de uma chave de sabedoria?",
-                    versiculo: "Em tudo dai graças, porque esta é a vontade de Deus em Cristo Jesus para convosco.",
-                    referencia: "1 Tessalonicenses 5:18"
-                },
-                'Carreira & Estudos': {
-                    motivacao: "Trabalhe com o coração e a mente, como se estivesse servindo a Deus.",
-                    versiculo: "Tudo o que fizerem, façam de todo o coração, como para o Senhor, e não para os homens.",
-                    referencia: "Colossenses 3:23"
-                },
-                'Vida Financeira': {
-                    motivacao: "O que você tem é uma bênção. Administre com sabedoria, e o Senhor proverá.",
-                    versiculo: "O Senhor é o meu pastor; de nada terei falta.",
-                    referencia: "Salmo 23:1"
-                },
-                'Bem-estar & Emoções': {
-                    motivacao: "Entregue suas preocupações a Ele, pois Ele cuida de você.",
-                    versiculo: "Lancem sobre ele toda a sua ansiedade, porque ele tem cuidado de vocês.",
-                    referencia: "1 Pedro 5:7"
-                }
-            };
+    <button type="submit">Enviar pergunta</button>
+  </form>
 
-            const respostaDaCategoria = respostas[categoria] || respostas['Espiritualidade & Fé'];
-            
-            return `"${pergunta}"\n\n${respostaDaCategoria.motivacao} "${respostaDaCategoria.versiculo}" (${respostaDaCategoria.referencia}). Que esta Palavra sirva como um farol para sua vida.`;
-        }
+  <footer>
+    © Chave da Vida
+  </footer>
 
-        window.copyPixCode = function() {
-            const pixCodeInput = document.getElementById('pix-code');
-            pixCodeInput.select();
-            document.execCommand('copy');
-            showToast("Código PIX copiado!");
-        };
-
-        window.doLogout = function() {
-            localStorage.clear();
-            showToast("Você saiu com sucesso!");
-            navigate('home');
-        };
-
-        window.onload = () => {
-             renderScreen('home');
-        };
-    </script>
 </body>
 </html>
